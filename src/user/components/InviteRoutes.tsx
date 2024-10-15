@@ -1,7 +1,7 @@
 import useFetch from '@/hooks/useFetch'
 import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-
+import { LoaderCircle } from 'lucide-react'
 export default function InviteRoutes({ children }: { children: React.ReactNode }) {
           const location = useLocation()
           const [isLoading, setIsLoading] = useState(false)
@@ -21,7 +21,6 @@ export default function InviteRoutes({ children }: { children: React.ReactNode }
                                                   setErrorMessage(response.error)
                                         }
                               } catch (error) {
-                                        console.log(error);
                                         setHasToken(false)
                               } finally {
                                         setIsLoading(false)
@@ -30,7 +29,11 @@ export default function InviteRoutes({ children }: { children: React.ReactNode }
                     verifyAuth()
           }, [])
           if (isLoading) {
-                    return <div>Loading...</div>
+                    return (
+                              <div className='min-h-max h-screen min-w-max w-screen flex justify-center items-center'>
+                                        <LoaderCircle className='animate-spin' size={50} />
+                              </div>
+                    )
           }
           if (!hasToken) {
                     return (

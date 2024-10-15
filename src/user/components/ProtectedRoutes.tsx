@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '../../hooks/useAuth';
 import useFetch from '@/hooks/useFetch';
-
+import { LoaderCircle } from 'lucide-react';
+import NotAuthorizedCard from './NotAuthorizedCard';
 interface ProtectedRoutesProps {
           children: React.ReactNode;
 }
@@ -11,8 +11,6 @@ interface ProtectedRoutesProps {
 const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
           const { state, dispatch } = useAuth();
           const { toast } = useToast();
-          const location = useLocation();
-
           useEffect(() => {
                     const verifyAuth = async () => {
                               dispatch({ type: 'SET_LOADING', payload: true });
@@ -21,6 +19,8 @@ const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
                                         if (response) {
                                                   dispatch({ type: 'LOGIN', payload: response.user });
                                         } else {
+                                                  console.log(response);
+
                                                   dispatch({ type: 'LOGOUT' });
                                                   toast({
                                                             title: 'Unauthorized',
@@ -38,11 +38,17 @@ const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
           }, [dispatch, toast]);
 
           if (state.isLoading) {
-                    return <div>Loading...</div>;
+                    return (
+                              <div className='min-h-max h-screen min-w-max w-screen flex justify-center items-center'>
+                                        <LoaderCircle className='animate-spin' size={50} />
+                              </div>
+                    )
           }
 
           if (!state.user) {
-                    return <Navigate to="/login" state={{ from: location }} replace />;
+                    return (
+                              <NotAuthorizedCard />
+                    )
           }
 
           return <>{children}</>;

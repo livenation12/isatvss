@@ -2,94 +2,102 @@ import useFetch from "@/hooks/useFetch"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../hooks/useAuth"
 import { Requests } from "@/interfaces/requests.interface"
-import { Users } from "lucide-react"
+import NoRequest from "../../assets/planschedule.png"
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { formatDate } from "@/helper"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Calendar, Footprints } from "lucide-react"
 export default function UserRequests() {
-  const [requests, setRequests] = useState<Requests[]>([])
-  const { state } = useAuth()
+  const [requests, setRequests] = useState<Requests[]>([]);
+  const { state } = useAuth();
+  const [isUpdated, setIsUpdated] = useState(false);
+  const [isRowLoading, setIsRowLoading] = useState('')
+  const status = [
+    { type: 'pending', data: requests.filter(request => request.status === 'Pending') },
+    { type: 'approved', data: requests.filter(request => request.status === 'Approved') },
+    { type: 'rejected', data: requests.filter(request => request.status === 'Rejected') },
+    { type: 'cancelled', data: requests.filter(request => request.status === 'Cancelled') },
+    { type: 'completed', data: requests.filter(request => request.status === 'Completed') }
+  ]
+  const handleCancelRequest = async (id: string) => {
+    setIsRowLoading(id)
+    try {
+      const response = await useFetch(`/requests/${id}/status/cancel`, {
+        method: 'PATCH',
+        body: { status: 'Cancelled' }
+      })
+      if (response) {
+        setIsUpdated(!isUpdated)
+      }
+    } catch (error) {
+      console.log(error);
+
+    } finally {
+      setIsRowLoading('')
+    }
+  }
+
   useEffect(() => {
     const fetchRequest = async () => {
       try {
-        const response = await useFetch(`/requests/${state.user?.id}`, {})
+        const response = await useFetch(`/requests/${state.user?.id}`, {});
         if (response) {
-          setRequests(response.data)
+          setRequests(response.data);
         }
       } catch (error) {
         console.log(error);
       }
-    }
-    fetchRequest()
-  }, [])
+    };
+    fetchRequest();
+  }, [state.user?.id, isUpdated]); // Add dependency on user ID
 
-  if (requests.length === 0) {
-    return (
-      <div className="container my-2">
-        <h2 className="my-3 font-bold text-xl">No Requests found</h2>
-      </div>
-    )
-  }
-  if (requests.length > 0) {
-    return (
-      <div>
-        <div className="container my-2 animate-fadeIn duration-500">
-          <h2 className="my-3 font-bold text-xl">Your Requests</h2>
-          <div className="container">
-            <div className="grid gap-5">
-              {requests.map((request) => (
-                <div key={request._id} className="grid lg:grid-cols-2 hover:shadow-xl rounded">
-                  <section>
-                    <div className="flex overflow-y-auto gap-5 rounded">
-                      {request.vehicle.images.map((image) => (
-                        <img
-                          key={image}
-                          src={`${import.meta.env.VITE_UPLOAD_URL}/vehicles/${image}`}
-                          alt="vehicle"
-                          className="max-h-[200px] object-cover"
-                        />
-                      ))}
-                    </div>
-                  </section>
-                  <section className="flex flex-col px-5 py-2">
-                    <h3 className="text-lg font-semibold">Requesting date</h3>
-                    <p className="ms-5">{request.startDate} to {request.endDate}</p>
-                    <h3 className="text-lg font-semibold">Status</h3>
-                    <p className="ms-5 inline-flex">{request.status} </p>
-                    <h4 className="font-semibold text-lg">Requesting vehicle</h4>
-                    <div className="ms-5">
-                      <p>{request.vehicle.model}</p>
-                      <p>{request.vehicle.licensePlate}</p>
-                      <p className="inline-flex items-center gap-2 font-semibold"><Users size={18} /> {request.vehicle.maxCapacity}</p>
-                      {request.status === "Pending" && <Button variant='destructive' className="float-end">Cancel request</Button>}
-                      {request.status === "Rejected" &&
-                        <div className="flex justify-end">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant='outline'>View Reason</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Reason of rejection</DialogTitle>
-                              </DialogHeader>
-                              <p className="italic text-sm my-5">{request.message}</p>
-                              <DialogFooter>
-                                <DialogClose asChild>
-                                  <Button variant='outline'>Close</Button>
-                                </DialogClose>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
+  return (
+    <div className="container">
+      <Tabs className="flex flex-col items-center w-full" defaultValue="pending">
+        <TabsList className="w-full">
+          {status.map(({ type }) => (
+            <TabsTrigger key={type} value={type} className="w-full">
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        {status.map(({ type, data }) => (
+          <TabsContent key={type} value={type} className="w-full">
+            <Table className="bg-white rounded">
+              <TableBody>
+                {data.length > 0 ?
+                  data.map((item, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <div className="flex gap-1.5 relative">
+                          <img src={`${import.meta.env.VITE_UPLOAD_URL}/vehicles/${item.vehicle.images[0]}`} alt="" width={250} />
+                          <div className="flex flex-col gap-1.5">
+                            <p className="font-semibold inline-flex items-center gap-1.5"><Calendar size={16} /> {formatDate(item.startDate)} <span className="text-sm font-normal text-gray-500">to</span> {formatDate(item.endDate)}</p>
+                            <p className="font-semibold inline-flex items-center gap-1.5"><Footprints size={16} />{item.eventLocation}</p>
+                            <p className="text-sm text-gray-500">{item.eventDescription}</p>
+                          </div>
+                          {item.status === 'Pending' && <Button variant='destructive' loadingText="Canceling" isLoading={isRowLoading === item._id} onClick={() => handleCancelRequest(item._id)} className="absolute right-1 bottom-1">Cancel request</Button>
+                          }
                         </div>
-                      }
-                    </div>
-                  </section>
-                </div>
-              )
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
+                      </TableCell>
+                    </TableRow>
+                  ))
+                  : (
+                    <TableRow>
+                      <TableCell>
+                        <figure>
+                          <figcaption className="text-center mt-8 text-xl">No {type} requests</figcaption>
+                          <img className="mx-auto my-10" src={NoRequest} alt="No request" />
+                        </figure>
+                      </TableCell>
+                    </TableRow>
+                  )}
+              </TableBody>
+            </Table>
+          </TabsContent>
+        ))}
+      </Tabs>
+    </div>
+  );
 }

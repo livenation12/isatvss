@@ -15,7 +15,7 @@ const buttonVariants = cva(
         outline:
           "border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50",
         secondary:
-          "bg-blue-100 text-blue-900 hover:bg-blue-100/80 dark:bg-blue-800 dark:text-blue-50 dark:hover:bg-blue-800/80",
+          "bg-gray-100 text-gray-500 hover:bg-gray-100/80 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-800/80",
         ghost: "hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-800 dark:hover:text-gray-50",
         link: "text-blue-900 underline-offset-4 hover:underline dark:text-blue-50",
       },
@@ -42,10 +42,11 @@ export interface ButtonProps
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isLoading = false, loadingText = 'Loading', asChild = false, ...props }, ref) => {
+  ({ className, disabled, variant, size, isLoading = false, loadingText = 'Loading', asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
+        disabled={isLoading}
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}

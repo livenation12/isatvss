@@ -4,8 +4,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import useFetch from "@/hooks/useFetch";
 import type { Vehicle } from "@/interfaces";
+import { useVehicle } from "../hooks/useVehicle";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function VehicleForm() {
+          const { toast } = useToast()
+          const { dispatch } = useVehicle()
           const { register, handleSubmit, setError, formState: { errors, isSubmitting }, reset } = useForm<Vehicle>();
           const onSubmit: SubmitHandler<Vehicle> = async (data) => {
                     const formData = new FormData();
@@ -31,6 +35,8 @@ export default function VehicleForm() {
                     const response = await useFetch("/vehicles", { body: formData, method: 'POST' });
 
                     if (response.success) {
+                              dispatch({ type: "IS_UPDATED" });
+                              toast({ title: "Created", description: "Vehicle created successfully" });
                               reset();
                     } else {
                               setError(response.field, { type: "custom", message: response.message });
@@ -52,8 +58,12 @@ export default function VehicleForm() {
                               <Input {...register("year", { required: "Year is required." })} />
                               <p className="text-red-500 ms-2 text-xs">{errors.year?.message}</p>
 
+                              <Label className="ms-1">Odometer</Label>
+                              <Input type="number" {...register("odoMeter", { required: "Odometer is required." })} />
+                              <p className="text-red-500 ms-2 text-xs">{errors.odoMeter?.message}</p>
+
                               <Label className="ms-1">Color</Label>
-                              <Input {...register("color", { required: "Color is required." })} />
+                              <Input {...register("color")} />
                               <p className="text-red-500 ms-2 text-xs">{errors.color?.message}</p>
 
                               <Label className="ms-1">Max Capacity</Label>
@@ -63,7 +73,7 @@ export default function VehicleForm() {
                               <Label className="ms-1">License Plate</Label>
                               <Input {...register("licensePlate", { required: "License Plate is required." })} />
                               <p className="text-red-500 ms-2 text-xs">{errors.licensePlate?.message}</p>
-                              <Button type="submit" isLoading={isSubmitting}>Create</Button>
+                              <Button type="submit" isLoading={isSubmitting} loadingText="Creating">Create</Button>
                     </form>
           );
 }

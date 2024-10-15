@@ -21,7 +21,7 @@ import { CalendarProvider } from './user/contexts/CalendarContext.tsx';
 import UserRequests from './user/features/UserRequests.tsx';
 import AdminRequests from './admin/features/AdminRequests.tsx';
 import { RequestProvider } from './admin/contexts/RequestContext.tsx';
-// import PrivateRoutes from './admin/components/PrivateRoutes.tsx';
+import PrivateRoutes from './admin/components/PrivateRoutes.tsx';
 import { VehicleProvider } from './admin/contexts/VehicleContext.tsx';
 import { UserProvider } from './admin/contexts/UserContext.tsx';
 import AdminUserDetails from './admin/features/AdminUserDetails.tsx';
@@ -76,10 +76,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element:
-      // <PrivateRoutes>
+      <PrivateRoutes>
         <AdminRoot />
-      // </PrivateRoutes>
-      ,
+      </PrivateRoutes>
+    ,
     children: [
       {
         index: true,

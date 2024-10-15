@@ -16,7 +16,7 @@ interface LocationState {
 export default function Login() {
           const navigate = useNavigate();
           const location = useLocation();
-          const { handleSubmit, register, setError, formState: { errors } } = useForm<UserLogin>();
+          const { handleSubmit, register, setError, formState: { errors, isSubmitting } } = useForm<UserLogin>();
           const { dispatch } = useAuth();
           const [isPasswordShown, setIsPasswordShown] = useState(false)
           const onSubmit: SubmitHandler<UserLogin> = async (data) => {
@@ -53,7 +53,7 @@ export default function Login() {
                                                                       <p className="text-red-500 ms-2 text-xs">{errors.password?.message}</p>
                                                             </div>
 
-                                                            <Button type="submit"  >Login</Button>
+                                                            <Button type="submit" isLoading={isSubmitting} loadingText="Logging in">Login</Button>
                                                   </form>
                                         </div>
                               </div>

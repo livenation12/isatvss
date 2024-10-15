@@ -48,11 +48,13 @@ export default function AdminUsers() {
                     }
           }
           return (
-                    <div className='animate-fadeIn duration-700'>
+                    <div className='container animate-fadeIn duration-500'>
+                              <h2 className='text-3xl font-semibold'>Users</h2>
                               <div className='flex justify-end'>
+
                                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                                   <DialogTrigger asChild>
-                                                            <Button>New User</Button>
+                                                            <Button>Invite</Button>
                                                   </DialogTrigger>
                                                   <DialogContent>
                                                             <DialogHeader>
@@ -65,12 +67,12 @@ export default function AdminUsers() {
                                                                       <Input id='email' onChange={(e) => setEmail(e.target.value)} placeholder='Enter email' />
                                                             </div>
                                                             <DialogFooter>
-                                                                      <Button isLoading={isLoading} onClick={handleUserCreateApplication}>Send</Button>
+                                                                      <Button isLoading={isLoading} loadingText='Sending' onClick={handleUserCreateApplication}>Send</Button>
                                                             </DialogFooter>
                                                   </DialogContent>
                                         </Dialog>
                               </div>
-                              <div className='grid lg:grid-cols-3 my-2'>
+                              <div className='grid md:grid-cols-2 lg:grid-cols-3 my-2'>
                                         {
                                                   users && users.length > 0 ? users.map((user) => (
                                                             <Link to={`/admin/users/${user._id}`} key={user._id} className='flex flex-col justify-start items-center hover:shadow hover:-translate-y-1 ease-in transition-all'>

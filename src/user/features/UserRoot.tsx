@@ -1,15 +1,14 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 
 export default function UserRoot() {
   return (
-    <div className="min-h-screen">
+    <div>
       <Navbar />
-      <main>
+      <main className="w-screen h-[90vh] min-w-max min-h-[90vh]">
         <Outlet />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

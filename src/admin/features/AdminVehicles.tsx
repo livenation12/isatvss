@@ -6,7 +6,10 @@ import { Vehicle } from "@/interfaces"
 import { Car, Users } from "lucide-react"
 import useFetch from "@/hooks/useFetch"
 import { Link } from "react-router-dom"
+import { useVehicle } from "../hooks/useVehicle"
+import Nocar from "@/assets/notfound.png"
 export default function AdminVehicles() {
+          const { state } = useVehicle()
           const [vehicles, setVehicles] = useState<Vehicle[]>([])
           useEffect(() => {
                     const fetchVehicles = async () => {
@@ -14,7 +17,7 @@ export default function AdminVehicles() {
                               setVehicles(response.data)
                     }
                     fetchVehicles()
-          }, [])
+          }, [state.isUpdated])
           return (
                     <div className="container space-y-2 animate-fadeIn duration-700">
                               <div className="flex justify-between items-center">
@@ -34,11 +37,15 @@ export default function AdminVehicles() {
                                                   </DialogContent>
                                         </Dialog>
                               </div>
-                              <div className="grid grid-cols-3 gap-2">
-                                        {vehicles.map((vehicle: Vehicle) => (
+                              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-1.5">
+                                        {vehicles.length > 0 ? vehicles.map((vehicle: Vehicle) => (
                                                   <Link to={`/admin/vehicles/${vehicle._id}`} key={vehicle._id}>
                                                             <figure className="hover:shadow hover:-translate-y-1 transition-all ease-in">
-                                                                      <img className="object-cover w-full max-h-[200px] min-h-[200px]" src={`${import.meta.env.VITE_UPLOAD_URL}/vehicles/${vehicle.images[0]}`} alt={vehicle.model} />
+                                                                      {vehicle.images.length > 0 ?
+                                                                                <img className="object-cover w-full max-h-[200px] min-h-[200px]" src={`${import.meta.env.VITE_UPLOAD_URL}/vehicles/${vehicle.images[0]}`} alt={vehicle.model} />
+                                                                                :
+                                                                                <img src={Nocar} alt={vehicle.model} />
+                                                                      }
                                                                       <figcaption className="p-3 relative">
                                                                                 <div>
                                                                                           <h3 className="text-lg font-semibold">{vehicle.model}</h3>
@@ -48,7 +55,10 @@ export default function AdminVehicles() {
                                                                       </figcaption>
                                                             </figure>
                                                   </Link>
-                                        ))}
+                                        ))
+                                                  :
+                                                  <p className="text-center col-span-full">No vehicles uploaded yet</p>
+                                        }
                               </div>
                     </div>
           )

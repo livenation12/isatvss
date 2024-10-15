@@ -81,18 +81,17 @@ export default function AdminVehicleDetails() {
                               <Link to='/admin/vehicles' className="flex gap-2 font-semibold"><ArrowLeft />  Back to list</Link>
                               <div className="container">
                                         <h1 className="text-3xl inline-flex items-center gap-x-5 font-bold my-2">
-                                                  Vehicle Details
+                                                  Manage vehicle
                                         </h1>
 
-                                        <div className="fl`ex flex-col-reverse items-start lg:grid lg:grid-cols-2 gap-5">
+                                        <div className="flex flex-col-reverse items-start lg:grid lg:grid-cols-2 gap-5">
                                                   <div className="flex flex-col my-5 items-center h-full duration-500">
                                                             <div className="mt-5">
                                                                       <p className="font-semibold text-2xl flex items-center gap-x-2">Model:  <span className="text-xl font-normal">{vehicleDetails?.model}</span></p>
                                                                       <p className="font-semibold text-2xl flex items-center gap-x-2">License Plate:  <span className="text-xl font-normal">{vehicleDetails?.licensePlate}</span></p>
                                                                       <p className="font-semibold text-2xl flex items-center gap-x-2">Max Capacity:  <span className="text-xl font-normal">{vehicleDetails?.maxCapacity}</span></p>
-                                                                      <p className="font-semibold text-2xl flex items-center gap-x-2">Model:  <span className="text-xl font-normal">{vehicleDetails?.model}</span></p>
+                                                                      <p className="font-semibold text-2xl flex items-center gap-x-2">Odometer:  <span className="text-xl font-normal">{vehicleDetails?.odoMeter}</span></p>
                                                                       <div className="flex gap-2 my-10">
-
                                                                                 <Dialog>
                                                                                           <DialogTrigger asChild>
                                                                                                     <Button variant='outline' className="inline-flex gap-1.5"><Pencil /> Update</Button>
@@ -100,8 +99,8 @@ export default function AdminVehicleDetails() {
                                                                                           <DialogContent>
                                                                                                     <DialogHeader>
                                                                                                               <DialogTitle>Update vehicle</DialogTitle>
-                                                                                                              <DialogDescription>
-                                                                                                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sint eius sit accusantium ex excepturi tenetur? Temporibus, quos? Cupiditate sed nam perspiciatis quos facilis dignissimos recusandae ad ex modi quibusdam?
+                                                                                                              <DialogDescription className="text-xs">
+                                                                                                                        Update the vehicle details here
                                                                                                               </DialogDescription>
                                                                                                     </DialogHeader>
                                                                                                     <form onSubmit={handleSubmit(onSubmitUpdate)} className="space-y-2">
@@ -120,7 +119,6 @@ export default function AdminVehicleDetails() {
                                                                                                                         <Label className="font-semibold" htmlFor="licensePlate">License Plate</Label>
                                                                                                                         <Input id="licensePlate" {...register("licensePlate", { required: "License plate is required." })} />
                                                                                                                         <p className="text-red-500 ms-2 text-xs">{errors.licensePlate?.message}</p>
-
                                                                                                               </div>
                                                                                                               <div>
                                                                                                                         <Label className="font-semibold" htmlFor="maxCapacity">Max Capacity</Label>
@@ -134,8 +132,13 @@ export default function AdminVehicleDetails() {
                                                                                                               </div>
                                                                                                               <div>
                                                                                                                         <Label className="font-semibold" htmlFor="color">Color</Label>
-                                                                                                                        <Input id="color" {...register("color", { required: "Color is required." })} />
+                                                                                                                        <Input id="color" {...register("color")} />
                                                                                                                         <p className="text-red-500 ms-2 text-xs">{errors.color?.message}</p>
+                                                                                                              </div>
+                                                                                                              <div>
+                                                                                                                        <Label className="font-semibold" htmlFor="odoMeter">Odometer</Label>
+                                                                                                                        <Input id="odoMeter" {...register("odoMeter", { required: "Odometer is required." })} />
+                                                                                                                        <p className="text-red-500 ms-2 text-xs">{errors.odoMeter?.message}</p>
                                                                                                               </div>
                                                                                                               <DialogFooter>
                                                                                                                         <Button type="submit" isLoading={isSubmitting} disabled={!isDirty} className="gap-1.5"><Save size={18} /> Save</Button>
@@ -143,17 +146,17 @@ export default function AdminVehicleDetails() {
                                                                                                     </form>
                                                                                           </DialogContent>
                                                                                 </Dialog>
-                                                                                <Dialog>
+                                                                                {/* <Dialog>
                                                                                           <DialogTrigger asChild>
                                                                                                     <Button variant='destructive' className="inline-flex gap-1.5"><Trash size={18} /> Delete</Button>
                                                                                           </DialogTrigger>
-                                                                                          <DialogContent className="bg-red-200">
+                                                                                          <DialogContent>
                                                                                                     <DialogHeader>
                                                                                                               <DialogTitle>
                                                                                                                         Delete confirmation
                                                                                                               </DialogTitle>
+                                                                                                              <DialogDescription>Are you sure you want to delete this vehicle</DialogDescription>
                                                                                                     </DialogHeader>
-                                                                                                    <p>Are you sure to delete this vehicle?</p>
                                                                                                     <DialogFooter>
                                                                                                               <DialogClose asChild>
                                                                                                                         <Button variant='ghost'>Cancel</Button>
@@ -161,7 +164,7 @@ export default function AdminVehicleDetails() {
                                                                                                               <Button variant='destructive' onClick={handleDeleteVehicle}>Delete</Button>
                                                                                                     </DialogFooter>
                                                                                           </DialogContent>
-                                                                                </Dialog>
+                                                                                </Dialog> */}
                                                                       </div>
                                                             </div>
                                                   </div>

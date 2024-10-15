@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SubmitHandler, useForm, } from "react-hook-form"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import useFetch from "@/hooks/useFetch"
 import { Label } from "@/components/ui/label"
 import { useAuth } from "@/hooks/useAuth"
 import { useState } from "react"
 import { EyeIcon, EyeOffIcon, Lock, User } from "lucide-react"
-
 interface LoginForm {
   email: String,
   password: String
@@ -26,27 +25,38 @@ export default function Gate() {
     } else {
       setError(response.field, { type: "custom", message: response.message })
     }
-  }  
+  }
   const handleIconClick = () => {
     setIsPasswordShown(!isPasswordShown)
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div className="flex flex-col justify-center mt-10 bg-white items-center shadow-md">
-        <h2 className="text-2xl font-semibold w-full text-center bg-gray-100 p-3">
-          VSS Admin Login
-        </h2>
-        <form className="flex flex-col gap-1.5 w-[400px] px-3 py-5" onSubmit={handleSubmit(onSubmit)}>
-          <Label className="ms-1 font-semibold">Email</Label>
-          <Input autoFocus startIcon={<User size={18} />} {...register("email", { required: "Email is required." })} placeholder="Enter your email" />
-          <p className="text-red-500 ms-2 text-xs">{errors.email?.message}</p>
-          <Label className="ms-1 font-semibold">Password</Label>
-          <Input startIcon={<Lock size={18} />} type={isPasswordShown ? "text" : "password"} endIcon={isPasswordShown ? <EyeIcon size={18} onClick={handleIconClick} /> : <EyeOffIcon size={18} onClick={handleIconClick} />} {...register("password", { required: "Password is required." })} placeholder="Enter your password" />
-          <p className="text-red-500 ms-2 text-xs">{errors.password?.message}</p>
-          <Button type="submit" isLoading={isSubmitting}>Login</Button>
-        </form>
+    <>
+      <div className="flex justify-between lg:mx-10">
+        <Link to={'/home'} className="inline-flex p-3 my-2 bg-blue-900 text-white mx-3 rounded-full text-sm justify-center font-semibold">Vehicle Scheduling System</Link>
+
+        <Link to={'/login'} className="inline-flex gap-x-1.5 p-3 my-2 bg-white text-blue-900 mx-3 rounded-full text-sm justify-center font-semibold"><User size={20} /> Login as user</Link>
       </div>
-    </div >
+      <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center mt-10 bg-white items-center shadow-md">
+          <h2 className="text-2xl font-semibold w-full text-center bg-gray-100 p-3">
+            VSS Admin Login
+          </h2>
+          <form className="flex flex-col gap-1.5 w-[400px] px-3 py-5" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <Label className="ms-1 font-semibold">Email</Label>
+              <Input autoFocus startIcon={<User size={18} />} {...register("email", { required: "Email is required." })} placeholder="Enter your email" />
+              <p className="text-red-500 ms-2 text-xs">{errors.email?.message}</p>
+            </div>
+            <div>
+              <Label className="ms-1 font-semibold">Password</Label>
+              <Input startIcon={<Lock size={18} />} type={isPasswordShown ? "text" : "password"} endIcon={isPasswordShown ? <EyeIcon size={18} onClick={handleIconClick} /> : <EyeOffIcon size={18} onClick={handleIconClick} />} {...register("password", { required: "Password is required." })} placeholder="Enter your password" />
+              <p className="text-red-500 ms-2 text-xs">{errors.password?.message}</p>
+            </div>
+            <Button type="submit" loadingText="Logging in" isLoading={isSubmitting}>Login</Button>
+          </form>
+        </div>
+      </div>
+    </>
   )
 }

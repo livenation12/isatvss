@@ -9,8 +9,9 @@ export interface Vehicle {
           licensePlate: string;
           model: string;
           year: number;
-          color: string;
+          color?: string;
           maxCapacity: number;
+          odoMeter: number;
           images: string[];
           schedules: Schedule[];
 }

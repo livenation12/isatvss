@@ -9,13 +9,12 @@ const PrivateRoutes = ({ children }: { children: React.ReactNode }) => {
           const { state, dispatch } = useAuth();
           const { toast } = useToast();
           const location = useLocation();
-          console.log(state);
 
           useEffect(() => {
                     dispatch({ type: 'SET_LOADING', payload: true });
                     const verifyAdmin = async () => {
                               try {
-                                        const response = await useFetch('/admin/verify', { method: 'GET', credentials: 'include' });
+                                        const response = await useFetch('/admin/verify', {});
                                         if (response.admin) {
                                                   dispatch({ type: 'LOGIN', payload: response.admin });
                                         } else {
@@ -38,7 +37,7 @@ const PrivateRoutes = ({ children }: { children: React.ReactNode }) => {
           if (state.isLoading) {
                     return <div className='min-h-max h-screen min-w-max w-screen flex justify-center items-center'>
                               <LoaderCircle className='animate-spin' size={50} />
-                    </div>;
+                    </div>
           }
 
           if (!state.user) {

@@ -2,6 +2,7 @@ import useFetch from "@/hooks/useFetch"
 import { Vehicle } from "@/interfaces"
 import { Car, Users } from "lucide-react"
 import { useEffect, useState } from "react"
+import Nocar from "@/assets/notfound.png"
 export default function Vehicles() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   useEffect(() => {
@@ -12,10 +13,10 @@ export default function Vehicles() {
     fetchVehicles()
   }, [])
   return (
-    <div className="container my-2">
-      <h2 className="my-3 font-bold text-xl">Vehicle List</h2>
+    <div className="container my-2 animate-fadeIn duration-500">
+      <h2 className="my-3 font-bold text-3xl">Vehicle List</h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 container">
-        {vehicles.map((vehicle: Vehicle) => (
+        {vehicles.length > 0 ? vehicles.map((vehicle: Vehicle) => (
           <figure key={vehicle._id} className="hover:shadow animate-fadeIn duration-500">
             <img className="rounded-t-lg object-cover w-full min-h-max h-[250px]" src={`${import.meta.env.VITE_UPLOAD_URL}/vehicles/${vehicle.images[0]}`} alt={vehicle.model} />
             <figcaption className="p-3 relative">
@@ -27,7 +28,15 @@ export default function Vehicles() {
             </figcaption>
           </figure>
 
-        ))}
+        )) :
+          <div className="flex justify-center text-center col-span-full ">
+            <figure>
+              <img src={Nocar} width={500} alt="No vehicles" />
+              <figcaption className="font-semibold text-2xl">No vehicles uploaded yet</figcaption>
+            </figure>
+          </div>
+
+        }
       </div>
 
     </div>
